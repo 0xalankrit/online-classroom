@@ -9,6 +9,45 @@
       <li class="breadcrumb-item active" aria-current="page">Results</li>
     </ol>
   </nav>
+  <div class="row">
+      <div class="col col-7"></div>
+
+      <!-- <div class="col col-5"><a><button class="btn btn-outline-dark">How percentile is calculated?</button></a></div> -->
+      <div class="col col-5">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModal">
+        How percentile is calculated?
+    </button>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"><samp>How we calculated the percentile !</samp></h5>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button> -->
+            </div>
+            <div class="modal-body">
+            <div>
+                <i><b><samp>The percentile of a student is the % of the number of students having marks less than him/her.</samp></b></i><br><br>
+                 > <samp>For example: If in an examination a student’s percentile is 75 then it means that the student has scored more than 75% of students who took the test.</samp><br><br>
+                 > <samp>Now, in order to calculate percentile we have used the following formula:</samp><br><br>
+                <kbd>PERCENTILE</kbd> = <br><kbd>(NUMBER OF STUDENTS WHO SCORED BELOW OR EQUAL TO THE DESIRED STUDENT/ TOTAL NUMBER OF STUDENTS – 1)</kbd> * <kbd>100</kbd>
+                <!-- <b><b>PERCENTILE = (NUMBER OF STUDENTS WHO SCORED BELOW OR EQUAL TO THE DESIRED STUDENT/ TOTAL NUMBER OF STUDENTS – 1) * 100</b></b>  -->
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+        </div>
+    </div>
+      </div>
+  </div>
+
   {% include 'signUp/teachers/_header.html' with active='stats' %}
 
   <h2 class="mb-3">{{ quiz.name }} Results</h2>
@@ -28,9 +67,9 @@
     </div>
     
     <dv class="container my-2">
-        Average Score: {{ quiz_score_.average_score|default_if_none:0.0 | floatformat:2}}<br>
-        Maximum Score: {{ quiz_max.max_score|default_if_none:0.0 }}<br>
-        Minimum Score: {{ quiz_min.min_score|default_if_none:0.0 }}<br>
+        <kbd>Average Score: {{ quiz_score_.average_score|default_if_none:0.0 | floatformat:2}}</kbd><br>
+        <kbd>Maximum Score: {{ quiz_max.max_score|default_if_none:0.0 }}</kbd><br>
+        <kbd>Minimum Score: {{ quiz_min.min_score|default_if_none:0.0 }}</kbd><br>
 
     
     </div>
@@ -80,7 +119,7 @@
   <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: [{% for taken_quiz in taken_quizzes %}
                     '{{ taken_quiz.student.user.username }}',
@@ -91,6 +130,10 @@
                       '{{ taken_quiz.score | floatformat }}',
                       {% endfor %}],
                 borderColor: [
+                    'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)',
                     'rgba(0, 0, 0, 1)',
                     'rgba(0, 0, 0, 1)',
                     'rgba(0, 0, 0, 1)',
@@ -117,7 +160,7 @@
                 yAxes: [{
                     ticks: {
                     min: 0,
-                    max: 5,
+                    max: 10,
                     }
                 }]
                 },

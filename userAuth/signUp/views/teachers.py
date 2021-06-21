@@ -1,3 +1,4 @@
+# from userAuth.signUp import views
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -9,11 +10,13 @@ from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
+from django.views.generic.base import View
 
 from ..decorators import teacher_required
 from ..forms import BaseAnswerInlineFormSet, QuestionForm, TeacherSignUpForm
 from ..models import Answer, Question, Quiz, User
-
+import pandas as pd
+import json
 
 class TeacherSignUpView(CreateView):
     model = User
@@ -130,10 +133,10 @@ def percentile(arr, n):
         count = 0
         j = 0
         while j < n:
-            if (arr[i] >= arr[j]):
+            if (arr[i] > arr[j]):
                 count += 1
             j += 1
-        percent = (count * 100) // (n)
+        percent = (count * 100) // (n-1)
  
         # print("Percentile of Student ", i + 1," = ", percent)
         percentile_list.append(percent)
@@ -151,17 +154,17 @@ class QuizStatsView(DetailView):
         stu_list=[]
         score_list=[]
         quiz = self.get_object()
-        taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
+        taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('date')
 
         total_taken_quizzes = taken_quizzes.count()
         quiz_score = quiz.taken_quizzes.aggregate(average_score=Avg('score'))
         quiz_max = quiz.taken_quizzes.aggregate(max_score=Max('score'))
         quiz_min = quiz.taken_quizzes.aggregate(min_score=Min('score'))
 
-        print('quiz_score----------',quiz_score)
-        print('quiz_max----------',quiz_max)
-        print('quiz_min----------',quiz_min)
-        print('taken quizes----------',taken_quizzes)
+        # print('quiz_score----------',quiz_score)
+        # print('quiz_max----------',quiz_max)
+        # print('quiz_min----------',quiz_min)
+        # print('taken quizes----------',taken_quizzes)
 
         for takenquiz in taken_quizzes.iterator():
             stu_list.append((takenquiz.score/quiz.number_of_questions)*100)
@@ -169,13 +172,23 @@ class QuizStatsView(DetailView):
         for takenquiz in taken_quizzes.iterator():
             score_list.append(takenquiz.score)
 
+        # print('score list-----------------------------',score_list)
+        score_list = [int(element * 10) for element in score_list]
+        # test_score_list=[71, 79, 68, 73, 73, 64, 69, 76, 77, 79, 97, 80, 71, 78, 68]
+        # print('score list-----------------------------',score_list)
         n = len(score_list)
+        # m = len(test_score_list)
+        # print('number of stdents-----------------------',n)
         lst=percentile(score_list, n)
+        # test_lst=percentile(test_score_list, m)
+        # print('----------------------------finallsit-+--------------------',lst)
 
         mylist = zip(taken_quizzes, stu_list ,lst)
+        # test_mylist = zip(taken_quizzes, stu_list ,test_lst)
 
         extra_context = {
             'mylist': mylist,  
+            # 'mylist': test_mylist,  
             'taken_quizzes': taken_quizzes,
             'total_taken_quizzes': total_taken_quizzes,
             'quiz_score_': quiz_score,
@@ -188,8 +201,16 @@ class QuizStatsView(DetailView):
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
-        return self.request.user.quizzes.all()        
+        return self.request.user.quizzes.all()   
 
+
+# percentile view added
+
+# @login_required
+# @teacher_required
+# def about_percentile(request,pk):
+#     print('-----------------------------',pk)
+#     return render(request,'signUp/teachers/about.html',{'pk':pk})
 
 @login_required
 @teacher_required
@@ -281,5 +302,13 @@ class QuestionDeleteView(DeleteView):
     def get_success_url(self):
         question = self.get_object()
         return reverse('teachers:quiz_change', kwargs={'pk': question.quiz_id})
-    
+        
+def Global_list(request):
+    df = pd.read_csv("static/csv/global_list.csv")
+    json_records = df.reset_index().to_json(orient ='records')
+    data = []
+    data = json.loads(json_records)
+    context = {'d': data}
+    return render(request, "signUp/teachers/global_list.html", context)
+
     
