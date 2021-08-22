@@ -36,7 +36,7 @@ pip install -r requirements.txt
   Open localhost:8000 in your browser to open the home page of our website<br />
 Github link: https://github.com/amandeep4272/online-classroom<br /><br />
 
->## SOME SNAP-SHOTS OF THE APPLICATION.
+<!-- >## SOME SNAP-SHOTS OF THE APPLICATION.
 
 
 ![Screenshot (169)](https://user-images.githubusercontent.com/56021490/121811941-ae2e8b00-cc83-11eb-80a2-ea811a2e138f.png)
@@ -52,7 +52,7 @@ Github link: https://github.com/amandeep4272/online-classroom<br /><br />
 ![Screenshot (175)](https://user-images.githubusercontent.com/56021490/121811987-d1f1d100-cc83-11eb-9231-635188d184f4.png)
 ---
 ![Screenshot (176)](https://user-images.githubusercontent.com/56021490/121811988-d322fe00-cc83-11eb-9f26-1de5e8a55650.png)
----
+--- -->
 
 ## License
 
